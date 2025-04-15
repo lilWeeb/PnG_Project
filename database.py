@@ -1,9 +1,12 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
-from sqlalchemy import Column, Integer, String, Decimal, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, DECIMAL, String, ForeignKey, DateTime
 
-DATABASE_URL = 'sqlite:///C:\Users\alexa\Desktop\Facultate\Sem2\Practica\Proiect\PnG_Project'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATABASE_FILE = os.path.join(BASE_DIR, "project.db")
+DATABASE_URL = "sqlite:///" + DATABASE_FILE
 engine = create_engine(DATABASE_URL, echo=True)
 Base = declarative_base()
 
@@ -25,30 +28,30 @@ class Plant(Base):
     name = Column(String, unique=True, nullable=False)
     location = Column(String)
     capacity = Column(Integer)
-    plant_products = relationship("Plant_Products", back_populates="plant")
-    plant_material = relationship("Plant_Material", back_populates="plant")
+    plant_products = relationship("PlantProduct", back_populates="plant")
+    plant_material = relationship("PlantMaterial", back_populates="plant")
 
-class Products(Base):
+class Product(Base):
     __tablename__ = 'product'
     
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, unique=True, nullable=False)
     description = Column(String)
     category = Column(String)
-    price = Column(Decimal(10, 2))
+    price = Column(DECIMAL)
     plant_products = relationship("PlantProduct", back_populates="product")
     product_material = relationship("ProductMaterial", back_populates="product")
     storage_product = relationship("StorageProduct", back_populates="product")
     order_product = relationship("OrderProduct", back_populates="product")
     
-class Plant_Product(Base):
+class PlantProduct(Base):
     __tablename__ = 'plant_product'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     plant_id = Column(Integer, ForeignKey('plant.id'))
-    product_id= Column(Integer, ForeignKey('products.id'))
+    product_id= Column(Integer, ForeignKey('product.id'))
     quantity = Column(Integer)
-    products = relationship("Products", back_populates="plant_product")
+    products = relationship("Product", back_populates="plant_product")
     plant = relationship("Plant", back_populates="plant_product")
 
 class Material(Base):
@@ -58,7 +61,7 @@ class Material(Base):
     name = Column(String, unique=True, nullable=False)
     description = Column(String)
     unit = Column(String)
-    cost = Column(Decimal(10, 2))
+    cost = Column(DECIMAL)
     plant_materials = relationship("PlantMaterial", back_populates="material")
     product_materials = relationship("ProductMaterial", back_populates="material")
     storage_material = relationship("StorageMaterial", back_populates="material")
@@ -78,8 +81,8 @@ class PlantMaterial(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     plant_id = Column(Integer, ForeignKey('plant.id'))
     material_id = Column(Integer, ForeignKey('material.id'))
-    quantity = Column(Decimal(10, 2))
-    plant = relationship("Plant", back_populates="plant_materials")
+    quantity = Column(Integer)
+    plant = relationship("Plant", back_populates="plant_material")
     material = relationship("Material", back_populates="plant_material")
 
 class Order(Base):
@@ -99,7 +102,7 @@ class ProductMaterial(Base):
     product_id = Column(Integer, ForeignKey('product.id'))
     material_id = Column(Integer, ForeignKey('material.id'))
     quantity = Column(Integer, nullable=False)
-    product = relationship("Products", back_populates="product_material")
+    product = relationship("Product", back_populates="product_material")
     material = relationship("Material", back_populates="product_material")
 
 
@@ -111,7 +114,7 @@ class OrderProduct(Base):
     product_id = Column(Integer, ForeignKey('product.id'))
     quantity = Column(Integer, nullable=False)
     order = relationship("Order", back_populates="order_product")
-    product = relationship("Products", back_populates="order_product")
+    product = relationship("Product", back_populates="order_product")
 
 class StorageProduct(Base):
     __tablename__ = 'storage_product'
@@ -119,5 +122,6 @@ class StorageProduct(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     product_id = Column(Integer, ForeignKey('product.id'))
     quantity = Column(Integer, nullable=False)
-    product = relationship("Products", back_populates="storage_product")
+    product = relationship("Product", back_populates="storage_product")
 
+Base.metadata.create_all(engine)
