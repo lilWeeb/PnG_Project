@@ -28,7 +28,7 @@ class Plant(Base):
     name = Column(String, unique=True, nullable=False)
     location = Column(String)
     capacity = Column(Integer)
-    plant_products = relationship("PlantProduct", back_populates="plant")
+    plant_product = relationship("PlantProduct", back_populates="plant")
     plant_material = relationship("PlantMaterial", back_populates="plant")
 
 class Product(Base):
@@ -39,7 +39,7 @@ class Product(Base):
     description = Column(String)
     category = Column(String)
     price = Column(DECIMAL)
-    plant_products = relationship("PlantProduct", back_populates="product")
+    plant_product = relationship("PlantProduct", back_populates="product")
     product_material = relationship("ProductMaterial", back_populates="product")
     storage_product = relationship("StorageProduct", back_populates="product")
     order_product = relationship("OrderProduct", back_populates="product")
@@ -51,7 +51,7 @@ class PlantProduct(Base):
     plant_id = Column(Integer, ForeignKey('plant.id'))
     product_id= Column(Integer, ForeignKey('product.id'))
     quantity = Column(Integer)
-    products = relationship("Product", back_populates="plant_product")
+    product = relationship("Product", back_populates="plant_product")
     plant = relationship("Plant", back_populates="plant_product")
 
 class Material(Base):
@@ -62,8 +62,8 @@ class Material(Base):
     description = Column(String)
     unit = Column(String)
     cost = Column(DECIMAL)
-    plant_materials = relationship("PlantMaterial", back_populates="material")
-    product_materials = relationship("ProductMaterial", back_populates="material")
+    plant_material = relationship("PlantMaterial", back_populates="material")
+    product_material = relationship("ProductMaterial", back_populates="material")
     storage_material = relationship("StorageMaterial", back_populates="material")
 
 
@@ -90,8 +90,8 @@ class Order(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     order_date = Column(DateTime, nullable=False)
-    delivery_date = Column(DateTime, nullable=False)
     status = Column(String, nullable=False)
+    customer_name = Column(String)
     order_product = relationship("OrderProduct", back_populates="order")
     
 

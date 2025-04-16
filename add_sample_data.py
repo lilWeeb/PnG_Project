@@ -10,7 +10,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATABASE_FILE = os.path.join(BASE_DIR, "project.db")
 DATABASE_URL = "sqlite:///" + DATABASE_FILE
 engine = create_engine(DATABASE_URL, echo=True)
-Base = declarative_base()
+# Base = declarative_base()
 
 # Test connection
 try:
