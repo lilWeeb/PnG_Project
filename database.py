@@ -20,6 +20,13 @@ except Exception as e:
 Session = sessionmaker(bind=engine)
 session = Session()
 
+def get_db():
+    db = Session()
+    try:
+        yield db
+    finally:
+        db.close()
+
 
 class Plant(Base):
     __tablename__ = 'plant'
