@@ -265,23 +265,18 @@ def test_full_order_flow(setup_database):
     plant_response = client.post("/plants/", json=plant_data)
     plant_id = plant_response.json()["id"]
     
-    # 4. Associate the material with the product (product requires materials)
     product_material_data = {"product_id": product_id, "material_id": material_id, "quantity": 2}
     client.post("/product-materials/", json=product_material_data)
     
-    # 5. Associate the product with the plant (plant produces products)
     plant_product_data = {"plant_id": plant_id, "product_id": product_id, "quantity": 20}
     client.post("/plant-products/", json=plant_product_data)
     
-    # 6. Add materials to storage
     storage_material_data = {"material_id": material_id, "quantity": 1000}
     client.post("/storage-materials/", json=storage_material_data)
     
-    # 7. Add products to storage
     storage_product_data = {"product_id": product_id, "quantity": 50}
     client.post("/storage-products/", json=storage_product_data)
     
-    # 8. Create an order
     order_data = {
         "order_date": datetime.now().isoformat(),
         "status": "New",
@@ -290,11 +285,9 @@ def test_full_order_flow(setup_database):
     order_response = client.post("/orders/", json=order_data)
     order_id = order_response.json()["id"]
     
-    # 9. Add products to the order
     order_product_data = {"order_id": order_id, "product_id": product_id, "quantity": 10}
     client.post("/order-products/", json=order_product_data)
     
-    # 10. Update order status
     updated_order_data = {
         "order_date": datetime.now().isoformat(),
         "status": "Completed",
@@ -304,7 +297,6 @@ def test_full_order_flow(setup_database):
     assert update_response.status_code == 200
     assert update_response.json()["status"] == "Completed"
     
-    # 11. Verify we can retrieve the order
     get_response = client.get(f"/orders/{order_id}")
     assert get_response.status_code == 200
     order_data = get_response.json()
