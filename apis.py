@@ -12,7 +12,6 @@ from database import StorageProduct, StorageMaterial, ProductMaterial, OrderProd
 app = FastAPI(title="Manufacturing Management API", 
               description="API for managing plants, products, materials, and orders")
 
-# Define models for join tables (moved to the top before they're used)
 class PlantProductCreate(BaseModel):
     plant_id: int
     product_id: int
@@ -45,7 +44,6 @@ class StorageMaterialCreate(BaseModel):
 async def root():
     return {'message': 'Welcome!'}
 
-# Plant CRUD Operations
 @app.post("/plants/", response_model=schemas.Plant, status_code=status.HTTP_201_CREATED)
 def create_plant(plant: schemas.PlantCreate, db: Session = Depends(get_db)):
     db_plant = Plant(name=plant.name, location=plant.location, capacity=plant.capacity)
@@ -89,7 +87,6 @@ def delete_plant(plant_id: int, db: Session = Depends(get_db)):
     db.commit()
     return None
 
-# Product CRUD Operations
 @app.post("/products/", response_model=schemas.Product, status_code=status.HTTP_201_CREATED)
 def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db)):
     db_product = Product(
@@ -138,7 +135,6 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
     db.commit()
     return None
 
-# Material CRUD Operations
 @app.post("/materials/", response_model=schemas.Material, status_code=status.HTTP_201_CREATED)
 def create_material(material: schemas.MaterialCreate, db: Session = Depends(get_db)):
     db_material = Material(
@@ -187,7 +183,6 @@ def delete_material(material_id: int, db: Session = Depends(get_db)):
     db.commit()
     return None
 
-# Order CRUD Operations
 @app.post("/orders/", response_model=schemas.Order, status_code=status.HTTP_201_CREATED)
 def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
     db_order = Order(
@@ -235,7 +230,6 @@ def delete_order(order_id: int, db: Session = Depends(get_db)):
     db.commit()
     return None
 
-# PlantProduct operations
 @app.post("/plant-products/", status_code=status.HTTP_201_CREATED)
 def create_plant_product(plant_product: PlantProductCreate, db: Session = Depends(get_db)):
     db_plant_product = PlantProduct(
@@ -263,7 +257,6 @@ def delete_plant_product(plant_product_id: int, db: Session = Depends(get_db)):
     db.commit()
     return None
 
-# PlantMaterial operations
 @app.post("/plant-materials/", status_code=status.HTTP_201_CREATED)
 def create_plant_material(plant_material: PlantMaterialCreate, db: Session = Depends(get_db)):
     db_plant_material = PlantMaterial(
@@ -291,7 +284,6 @@ def delete_plant_material(plant_material_id: int, db: Session = Depends(get_db))
     db.commit()
     return None
 
-# ProductMaterial operations
 @app.post("/product-materials/", status_code=status.HTTP_201_CREATED)
 def create_product_material(product_material: ProductMaterialCreate, db: Session = Depends(get_db)):
     db_product_material = ProductMaterial(
@@ -319,7 +311,6 @@ def delete_product_material(product_material_id: int, db: Session = Depends(get_
     db.commit()
     return None
 
-# OrderProduct operations
 @app.post("/order-products/", status_code=status.HTTP_201_CREATED)
 def create_order_product(order_product: OrderProductCreate, db: Session = Depends(get_db)):
     db_order_product = OrderProduct(
@@ -347,7 +338,7 @@ def delete_order_product(order_product_id: int, db: Session = Depends(get_db)):
     db.commit()
     return None
 
-# StorageProduct operations
+# StorageProduct operatons
 @app.post("/storage-products/", status_code=status.HTTP_201_CREATED)
 def create_storage_product(storage_product: StorageProductCreate, db: Session = Depends(get_db)):
     db_storage_product = StorageProduct(
@@ -387,7 +378,6 @@ def delete_storage_product(storage_product_id: int, db: Session = Depends(get_db
     db.commit()
     return None
 
-# StorageMaterial operations
 @app.post("/storage-materials/", status_code=status.HTTP_201_CREATED)
 def create_storage_material(storage_material: StorageMaterialCreate, db: Session = Depends(get_db)):
     db_storage_material = StorageMaterial(
